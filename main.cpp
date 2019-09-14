@@ -91,7 +91,7 @@ int main(int argc, char const *argv[]) {
     // Test case 7: Memory reallocation
     //
 
-    // increase size
+    // increase size when next block is empty
     assert(get_size(p6b) == 4);
 
     auto p7 = mem_realloc(p6, 8);
@@ -111,6 +111,31 @@ int main(int argc, char const *argv[]) {
     assert(p8b == p7b);
     assert(get_size(p8b) == 4);
     assert(!is_used(get_next(p8b)));
+
+    // increase size when next block is not exist
+    auto p9 = mem_alloc(7);
+    mem_dump("Operation 12: Allocate 7 bytes");
+
+    auto p10 = mem_realloc(p9, 12);
+    mem_dump("Operation 13: Reallocate 7 bytes to 12 bytes");
+    assert(p9 == p10);
+
+    auto p10b = get_mem_block(p10);
+    assert(get_size(p10b) == 12);
+    assert(is_used(p10b));
+    assert(get_next(p10b) == nullptr);
+
+    // increase size when next block is used
+    mem_free(p10);
+    mem_dump("Operation 14: Free last 12 bytes");
+
+
+    auto p11 = mem_realloc(p1, 8);
+    mem_dump("Operation 15: Reallocate 4 bytes to 8 bytes");
+
+    auto p11b = get_mem_block(p11);
+    assert(get_size(p11b) == 8);
+    assert(is_used(p11b));
 
     puts("\nAll tests passed!\n");
 }
