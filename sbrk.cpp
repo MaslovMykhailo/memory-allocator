@@ -6,7 +6,7 @@ static char * heap ;
 char * brkp = nullptr;
 char * endp = nullptr;
 
-void init( ) {
+void init_heap( ) {
     heap = (char *)mmap(nullptr, MAX_HEAP, (PROT_READ |PROT_WRITE), (MAP_PRIVATE | MAP_ANONYMOUS), -1, 0);
     brkp = heap;
     endp = brkp + MAX_HEAP;

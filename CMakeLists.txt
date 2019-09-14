@@ -3,4 +3,4 @@ project(MemoryAllocator)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(MemoryAllocator main.cpp sbrk.cpp sbrk.h)
+add_executable(MemoryAllocator main.cpp sbrk.cpp sbrk.h memory-block.cpp memory-block.h memory-allocation.cpp memory-allocation.h)
