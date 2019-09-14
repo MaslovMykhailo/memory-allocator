@@ -15,4 +15,6 @@ word_t * mem_realloc(word_t * data, size_t size);
 
 void mem_free(word_t *data);
 
+void mem_dump(const std::string& message);
+
 #endif //MEMORYALLOCATOR_MEMORY_ALLOCATION_H

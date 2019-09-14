@@ -188,3 +188,28 @@ void mem_free(word_t *data) {
     }
     set_used(block, false);
 }
+
+//
+//  print memory state info utils
+//
+
+void print_mem_block(Block * block) {
+    auto repeater = is_used(block) ? '*' : '~';
+    std::cout << "[";
+    for (auto i = get_size(block); i > 0; i--) {
+        std::cout << repeater;
+    }
+    std::cout << "]";
+}
+
+void mem_dump(const std::string& message = "") {
+    if (!message.empty()) {
+        std::cout << "\n" << message << "\n";
+    }
+    auto block = heapStart;
+    while (block != nullptr) {
+        print_mem_block(block);
+        block = get_next(block);
+    }
+    std::cout << "\n";
+}
