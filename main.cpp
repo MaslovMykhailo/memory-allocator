@@ -128,7 +128,7 @@ int main(int argc, char const *argv[]) {
 
     // increase size when next block is used
     mem_free(p10);
-    mem_dump("Operation 14: Free last 12 bytes");
+    mem_dump("Operation 14: Free last 64 bytes");
 
     auto p11 = mem_realloc(p1, 32);
     mem_dump("Operation 16: Reallocate 1 bytes to 32 bytes");
