@@ -18,6 +18,6 @@ void set_used(Block *block, bool used) {
 }
 
 Block * get_next(Block * block) {
-    auto nextBlock = (Block *)((char*)block + get_size(block) + sizeof(block->data) + sizeof(block->header));
+    auto nextBlock = (Block *)((char*)block + get_size(block) + sizeof(std::declval<Block>().data));
     return get_size(nextBlock) > 0 ? nextBlock : nullptr;
 }

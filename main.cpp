@@ -11,11 +11,12 @@ int main(int argc, char const *argv[]) {
     // Test case 1: Alignment
     //
 
-    assert(align(3) == 4);
+    assert(align(3) == 8);
     assert(align(8) == 8);
-    assert(align(12) == 12);
+    assert(align(12) == 16);
     assert(align(16) == 16);
-    assert(align(20) == 20);
+    assert(align(20) == 24);
+    assert(align(128 - 32) == 96);
 
     auto p1 = mem_alloc(1);
     mem_dump("Operation 1: Allocate 1 byte");
@@ -58,12 +59,12 @@ int main(int argc, char const *argv[]) {
     auto p4 = mem_alloc(2);
     mem_dump("Operation 5: Allocate 2 bytes");
     auto p4b = get_mem_block(p4);
-    assert(get_size(p4b) == 4);
+    assert(get_size(p4b) == 8);
 
     auto p5 = mem_alloc(4);
     mem_dump("Operation 6: Allocate 4 bytes");
     auto p5b = get_mem_block(p5);
-    assert(get_size(p5b) == 4);
+    assert(get_size(p5b) == 8);
 
     mem_free(p5);
     mem_dump("Operation 7: Free 4 bytes allocated above");
@@ -74,17 +75,17 @@ int main(int argc, char const *argv[]) {
     mem_dump("Operation 8: Free 2 bytes allocated above, empty blocks are merged");
 
     assert(get_next(p4b) == nullptr);
-    assert(get_size(p4b) == 8);
+    assert(get_size(p4b) == 16);
 
+    //
     // --------------------------------------
     // Test case 6: Block splitting
-    //
 
     auto p6 = mem_alloc(4);
     mem_dump("Operation 9: Allocate 4 bytes, empty block is split");
     auto p6b = get_mem_block(p6);
     assert(p6b == p4b);
-    assert(get_size(get_next(p6b)) == 4);
+    assert(get_size(get_next(p6b)) == 8);
     assert(!is_used(get_next(p6b)));
 
     // --------------------------------------
@@ -92,36 +93,36 @@ int main(int argc, char const *argv[]) {
     //
 
     // increase size when next block is empty
-    assert(get_size(p6b) == 4);
+    assert(get_size(p6b) == 8);
 
-    auto p7 = mem_realloc(p6, 8);
-    mem_dump("Operation 10: Reallocate 4 bytes allocated above to 8 bytes");
+    auto p7 = mem_realloc(p6, 13);
+    mem_dump("Operation 10: Reallocate 8 bytes allocated above to 13 bytes");
     assert(p7 == p6);
 
     auto p7b = get_mem_block(p7);
-    assert(get_size(p7b) == 8);
+    assert(get_size(p7b) == 16);
     assert(p7b == p6b);
 
     // decrease size
-    auto p8 = mem_realloc(p7, 4);
-    mem_dump("Operation 11: Reallocate 8 bytes allocated above to 4 bytes");
+    auto p8 = mem_realloc(p7, 5);
+    mem_dump("Operation 11: Reallocate 13 bytes allocated above to 5 bytes");
     assert(p8 == p7);
 
     auto p8b = get_mem_block(p8);
     assert(p8b == p7b);
-    assert(get_size(p8b) == 4);
+    assert(get_size(p8b) == 8);
     assert(!is_used(get_next(p8b)));
 
     // increase size when next block is not exist
-    auto p9 = mem_alloc(7);
-    mem_dump("Operation 12: Allocate 7 bytes");
+    auto p9 = mem_alloc(32);
+    mem_dump("Operation 12: Allocate 32 bytes");
 
-    auto p10 = mem_realloc(p9, 12);
-    mem_dump("Operation 13: Reallocate 7 bytes to 12 bytes");
+    auto p10 = mem_realloc(p9, 60);
+    mem_dump("Operation 13: Reallocate 32 bytes to 60 bytes");
     assert(p9 == p10);
 
     auto p10b = get_mem_block(p10);
-    assert(get_size(p10b) == 12);
+    assert(get_size(p10b) == 64);
     assert(is_used(p10b));
     assert(get_next(p10b) == nullptr);
 
@@ -129,12 +130,11 @@ int main(int argc, char const *argv[]) {
     mem_free(p10);
     mem_dump("Operation 14: Free last 12 bytes");
 
-
-    auto p11 = mem_realloc(p1, 8);
-    mem_dump("Operation 15: Reallocate 4 bytes to 8 bytes");
+    auto p11 = mem_realloc(p1, 32);
+    mem_dump("Operation 16: Reallocate 1 bytes to 32 bytes");
 
     auto p11b = get_mem_block(p11);
-    assert(get_size(p11b) == 8);
+    assert(get_size(p11b) == 32);
     assert(is_used(p11b));
 
     puts("\nAll tests passed!\n");

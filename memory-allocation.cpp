@@ -21,7 +21,8 @@ inline size_t get_alloc_size(size_t size) {
 //
 
 Block * get_mem_block(word_t *data) {
-    return (Block *)((char *)data - sizeof(Block) + sizeof(data));
+//    return (Block *)((char *)data - sizeof(Block) + sizeof(data));
+    return (Block *)((char *)data + sizeof(std::declval<Block>().data) - sizeof(Block));
 }
 
 Block * request_mem_from_os(size_t size) {
@@ -55,10 +56,11 @@ inline bool can_split(Block *block, size_t size) {
 }
 
 Block * split(Block *block, size_t size) {
-    auto sub_block = block + get_size(block) - size;
+//    auto subBlock = block + get_size(block) - size;
+    auto subBlock = (Block *)((char*)block + get_size(block) - size + sizeof(std::declval<Block>().data));
 
-    sub_block->header = get_size(block) - size;
-    set_used(sub_block, false);
+    subBlock->header = get_size(block) - size;
+    set_used(subBlock, false);
 
     return block;
 }
@@ -176,6 +178,8 @@ word_t * mem_realloc(word_t * data, size_t size) {
     newBlock->data[1] = * data;
 
     set_used(block, false);
+
+    auto next = get_next(newBlock);
 
     return resData;
 

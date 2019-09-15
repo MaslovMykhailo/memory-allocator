@@ -1,7 +1,7 @@
 #ifndef MEMORYALLOCATOR_MEMORY_BLOCK_H
 #define MEMORYALLOCATOR_MEMORY_BLOCK_H
 
-using word_t = int;
+using word_t = intptr_t ;
 
 struct Block {
     // Object header
