@@ -8,7 +8,7 @@
 // bytes alignment and size utils
 //
 
-size_t align(size_t n) {
+inline size_t align(size_t n) {
     return (n + sizeof(word_t) - 1) & ~(sizeof(word_t) - 1);
 }
 
@@ -51,7 +51,7 @@ Block * merge(Block *block) {
     return block;
 }
 
-inline bool can_split(Block *block, size_t size) {
+bool can_split(Block *block, size_t size) {
     return get_size(block) > size;
 }
 
